@@ -17,6 +17,6 @@ public class FrogPoints : MonoBehaviour
     public void MovePoints()
     {
         points++;
-        pointsUI.text = points.ToString();
+        pointsUI.text = "Points: " + points.ToString();
     }
 }

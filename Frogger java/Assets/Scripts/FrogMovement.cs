@@ -9,11 +9,14 @@ public class FrogMovement : MonoBehaviour
 
     [SerializeField] Vector3 target;
 
-    bool move;
+    [SerializeField]bool move;
+    bool onObject;
 
     float highScore;
 
     FrogPoints frogP;
+
+    GameObject Tree;
 
     private void Start()
     {
@@ -24,8 +27,6 @@ public class FrogMovement : MonoBehaviour
     private void Update()
     {
         Move();
-
-        
     }
    
     void Move()
@@ -54,7 +55,7 @@ public class FrogMovement : MonoBehaviour
         if (move == true && gameObject.transform.position != target)
         {
             gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, target, JumpSpeed * Time.deltaTime);
-            
+           // Debug.Log("Moving");
 
         }
         else
@@ -65,6 +66,32 @@ public class FrogMovement : MonoBehaviour
                 frogP.MovePoints();
                 highScore = gameObject.transform.position.y;
             }
+            if (onObject == true)
+            {
+                gameObject.transform.parent = Tree.transform;
+            }
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.GetComponent<TreeMovement>())
+        {
+            //gameObject.transform.parent = collision.gameObject.transform;
+            Tree = collision.gameObject;
+            onObject = true;
+
+           // Debug.Log("Hit");
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.GetComponent<TreeMovement>())
+        {
+            //gameObject.transform.parent = collision.gameObject.transform;
+            gameObject.transform.parent = null;
+            onObject = false;
+            Debug.Log("Hit");
         }
     }
 
