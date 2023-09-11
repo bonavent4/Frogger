@@ -26,6 +26,8 @@ public class FrogMovement : MonoBehaviour
 
     EndPoints endpoint;
 
+
+
     private void Start()
     {
         target = gameObject.transform.position;
@@ -111,13 +113,16 @@ public class FrogMovement : MonoBehaviour
                 onObject = false;
                 reachedEndPoint = false;
             }
-           /* else if (reachedEndPoint)
-            {
-                losingLife = true;
-                reachedEndPoint = false;
-            }*/
+            /* else if (reachedEndPoint)
+             {
+                 losingLife = true;
+                 reachedEndPoint = false;
+             }*/
 
-        
+            if (onObject && Tree.GetComponent<TreeMovement>().isDeadly == true)
+            {
+
+            }
             
         }
     }

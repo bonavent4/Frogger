@@ -8,6 +8,11 @@ public class TreeMovement : MonoBehaviour
     [SerializeField]float LeftPoint;
     [SerializeField]float RightPoint;
     //[SerializeField]bool isGoingLeft;
+
+    
+    public bool isDeadly;
+
+    
     void Update()
     {
         if(gameObject.transform.position.x <= LeftPoint && speed < 0)
@@ -19,5 +24,7 @@ public class TreeMovement : MonoBehaviour
             gameObject.transform.position = new Vector3(LeftPoint, gameObject.transform.position.y, gameObject.transform.position.z);
         }
         gameObject.transform.position += new Vector3(speed * Time.deltaTime, 0, 0);
+
+        
     }
 }
