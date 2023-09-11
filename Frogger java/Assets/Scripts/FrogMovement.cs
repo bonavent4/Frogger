@@ -12,14 +12,19 @@ public class FrogMovement : MonoBehaviour
     [SerializeField]bool move;
     bool onObject;
     bool losingLife;
+    bool reachedEndPoint;
 
-    float highScore;
+    [SerializeField] float highScore;
+    [SerializeField] float minimumDeathZone;
+    [SerializeField] float maximumDeathZone;
 
     FrogPoints frogP;
     FrogHealth frogH;
 
     GameObject Tree;
     [SerializeField]Transform start;
+
+    EndPoints endpoint;
 
     private void Start()
     {
@@ -38,21 +43,27 @@ public class FrogMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.D) && move == false)
         {
             target =  new Vector3(jumpDistance + gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z);
+            
+            gameObject.transform.rotation = Quaternion.Euler(new Vector3(gameObject.transform.rotation.x, gameObject.transform.rotation.y, -90));
             move = true;
         }
         if (Input.GetKeyDown(KeyCode.A) && move == false)
         {
             target =  new Vector3(-jumpDistance + gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z);
+            gameObject.transform.rotation = Quaternion.Euler(new Vector3(gameObject.transform.rotation.x, gameObject.transform.rotation.y, 90));
             move = true;
         }
         if (Input.GetKeyDown(KeyCode.S) && move == false)
         {
             target =  new Vector3(gameObject.transform.position.x, -jumpDistance + gameObject.transform.position.y, gameObject.transform.position.z);
+            
+            gameObject.transform.rotation = Quaternion.Euler(new Vector3(gameObject.transform.rotation.x, gameObject.transform.rotation.y, 180));
             move = true;
         }
         if (Input.GetKeyDown(KeyCode.W) && move == false)
         {
             target =  new Vector3(gameObject.transform.position.x, jumpDistance + gameObject.transform.position.y, gameObject.transform.position.z);
+            gameObject.transform.rotation = Quaternion.Euler(new Vector3(gameObject.transform.rotation.x, gameObject.transform.rotation.y, 0));
             move = true;
         }
 
@@ -68,20 +79,45 @@ public class FrogMovement : MonoBehaviour
             
             if(gameObject.transform.position.y > highScore && !losingLife)
             {
-                frogP.MovePoints();
+                frogP.MovePoints(10);
                 highScore = gameObject.transform.position.y;
             }
             if (onObject == true && !losingLife)
             {
                 gameObject.transform.parent = Tree.transform;
             }
-            if (losingLife)
+            if (losingLife)// || (gameObject.transform.position.y > minimumDeathZone && gameObject.transform.position.y < maximumDeathZone && !onObject) && !reachedEndPoint)
             {
                 frogH.LoseHealth();
                 gameObject.transform.position = new Vector3(start.transform.position.x, start.transform.position.y, 0);
                 losingLife = false;
                 highScore = gameObject.transform.position.y;
             }
+            if (reachedEndPoint && endpoint.faceHugger.activeSelf != true)
+            {
+                endpoint.faceHugger.SetActive(true);
+                gameObject.transform.position = new Vector3(start.transform.position.x, start.transform.position.y, 0);
+                highScore = gameObject.transform.position.y;
+
+                frogP.MovePoints(500);
+
+                if (endpoint.hasMosquito)
+                {
+                    frogP.MovePoints(200);
+                }
+
+
+                gameObject.transform.parent = null;
+                onObject = false;
+                reachedEndPoint = false;
+            }
+           /* else if (reachedEndPoint)
+            {
+                losingLife = true;
+                reachedEndPoint = false;
+            }*/
+
+        
             
         }
     }
@@ -100,6 +136,13 @@ public class FrogMovement : MonoBehaviour
         {
             losingLife = true;
         }
+        if (collision.GetComponent<EndPoints>())
+        {
+            endpoint = collision.gameObject.GetComponent<EndPoints>();
+
+            reachedEndPoint = true;
+        }
+
     }
     private void OnTriggerExit2D(Collider2D collision)
     {

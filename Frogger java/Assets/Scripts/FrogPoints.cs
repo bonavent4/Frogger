@@ -10,9 +10,9 @@ public class FrogPoints : MonoBehaviour
     int points;
 
 
-    public void MovePoints()
+    public void MovePoints(int pointsAdded)
     {
-        points++;
+        points += pointsAdded;
         pointsUI.text = "Score: " + points.ToString();
     }
 }
